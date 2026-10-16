@@ -1,5 +1,5 @@
-import { ValidationError, createOrder, getOrderById, deleteOrderById, getOrders } from "./service.js";
-import { NotFoundError } from "./store.js";
+import { createOrder, getOrderById, deleteOrderById, getOrders } from "./service.js";
+import { NotFoundError, ValidationError } from "./errorTypes.js";
 import express from "express";
 
 const API_VERSION = "1.0";

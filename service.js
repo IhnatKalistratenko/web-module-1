@@ -1,17 +1,8 @@
 import { deleteOrderFromStorage, getOrderContextById, getOrdersFromStorage as getOrdersContextFromStorage, persistOrderWithContext } from "./store.js";
 import { randomUUID } from "node:crypto";
+import { ValidationError } from "./errorTypes.js";
 
 const DEFAULT_ORDER_STATUS = "created";
-
-export class ValidationError extends Error {
-    constructor(message, errors)
-    {
-        super(message);
-
-        this.name = "ValidationError";
-        this.errors = errors;
-    }
-}
 
 function normalizeItems(items) {
   return items.map((item) => ({

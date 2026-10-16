@@ -1,5 +1,4 @@
-export class NotFoundError extends Error {
-}
+import { NotFoundError } from "./errorTypes.js";
 
 const orders = [];
 
@@ -11,16 +10,7 @@ function orderContext(order)
   };
 }
 
-async function synchronizeOrderState() {
-  const waitTime = 900 + Math.floor(Math.random() * 1101);
-
-  await new Promise((resolve) => {
-    setTimeout(resolve, waitTime);
-  });
-}
-
 async function prepareOrderContext(order) {
-  await synchronizeOrderState();
 
   return orderContext(order);
 }
@@ -41,7 +31,7 @@ export async function persistOrderWithContext(order) {
   return context.record;
 }
 
-export async function verifyOrderStateForRemoval(context, order) {
+export function verifyOrderStateForRemoval(context, order) {
   return context.itemCount === order.items.length;
 }
 
@@ -66,7 +56,5 @@ export async function deleteOrderFromStorage(orderId)
 
 export async function getOrdersFromStorage()
 {
-  await synchronizeOrderState();
-
   return orders.map((order) => orderContext(order));
 }
