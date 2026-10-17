@@ -66,8 +66,8 @@ router.post("/orders", async (req, res, next) => {
 });
 
 router.get("/orders", async (req, res) => {
-  const ordersContext = await getOrders();
-  const result = ordersContext.map(context => orderResponse(context.record));
+  const orders = await getOrders();
+  const result = orders.map(order => orderResponse(order));
 
   const responseBody = {
     orders: result,
@@ -81,9 +81,9 @@ router.get("/orders/:id", async (req, res, next) => {
   try {
     const requestedId = req.params.id;
     
-    const context = await getOrderById(requestedId); 
+    const order = await getOrderById(requestedId); 
 
-    const responseBody = orderResponse(context.record);
+    const responseBody = orderResponse(order);
     return res.status(200).json(responseBody);
   } catch (error) {
     return next(error);

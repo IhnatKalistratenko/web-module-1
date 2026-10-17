@@ -2,53 +2,28 @@ import { NotFoundError } from "./errorTypes.js";
 
 const orders = [];
 
-function orderContext(order)
-{
-  return {
-    record: order,
-    itemCount: order.items.length,
-  };
-}
-
-async function prepareOrderContext(order) {
-
-  return orderContext(order);
-}
-
-export async function getOrderContextById(orderId) {
+export function getOrderContextById(orderId) {
   const matchingOrder = orders.find((order) => order.id === orderId);
     
   if (!matchingOrder) {
     throw new NotFoundError;
   }
 
-  return await prepareOrderContext(matchingOrder);
+  return structuredClone(matchingOrder);
 }
 
 export async function persistOrderWithContext(order) {
-  orders.push(order);
-  const context = await prepareOrderContext(order);
-  return context.record;
-}
-
-export function verifyOrderStateForRemoval(context, order) {
-  return context.itemCount === order.items.length;
+  const orderCopy = structuredClone(order);
+  orders.push(orderCopy);
+  return structuredClone(orderCopy);
 }
 
 export async function deleteOrderFromStorage(orderId)
 {
   const orderIndex = orders.findIndex((order) => order.id === orderId);
-  const existingOrder = orders[orderIndex];
-  if(!existingOrder)
+  if(orderIndex === -1)
   {
-    throw new NotFoundError();
-  }
-  
-  const context = await prepareOrderContext(existingOrder);
-
-  if(!verifyOrderStateForRemoval(context, existingOrder))
-  {
-    throw new Error("Order can not be removed");
+    throw new NotFoundError;
   }
 
   orders.splice(orderIndex, 1);
@@ -56,5 +31,5 @@ export async function deleteOrderFromStorage(orderId)
 
 export async function getOrdersFromStorage()
 {
-  return orders.map((order) => orderContext(order));
+  return structuredClone(orders);
 }
